@@ -49,12 +49,18 @@ def parse_data_from_cards(cards: ResultSet) -> list:
             image_link = card.find('picture').find('img').get('src')
         except AttributeError:
             image_link = 'Нет картинки'
+        try:
+            in_stock = card.find('span', class_='availability').text
+        except AttributeError:
+            in_stock = 'Нет в наличии'
         obj = {
             'brand': card.get('data-brand'),
             'title': card.get('data-name'), 
+            # 'title': card.find('h3', class_='title ').text
             'price': float(card.get('data-price')) or 'Нет в наличии',
-            'image_link': card.find('picture').find('img').get('src'),
-            'card_link': image_link
+            'card_link': HOST+card.find('div', class_='goods-photo').find('a').get('href'),
+            'image_link': image_link,
+            'in_stock': in_stock
         }
         result.append(obj)
     return result
@@ -98,7 +104,7 @@ def main(category):
 
 
 if __name__ == '__main__':
-    main('stiralniye_mashiniy')
+    main('smartfoniy')
     # print(get_last_page('smartfoniy'))
 
 
